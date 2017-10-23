@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width" />
+    <title>Humidity / Temperature Pi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+
+    <style>
+    body {
+        display: grid;
+        min-height: 100vh;
+
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-column-gap: 1em;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .guage {
+        grid-column: 2;
+        height: 400px;
+        width: 400px;
+        background-color: black;
+        position: relative;
+        font-size: 100px;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .guage div {
+        z-index: 2;
+        position: relative;
+    }
+
+    .guage--humidity::before {
+        transition: height 300ms ease;
+        content: "";
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: calc(var(--humidity) * 1%);
+        background-color: red;
+        z-index: 0;
+    }
+
+    .guage:nth-child(2) {
+        grid-column-start: 3;
+    }
+    </style>
+</head>
+<body>
+    <div class="guage guage--humidity" id="humidity">
+
+    </div>
+
+    <div class="guage" id="temperature">
+
+    </div>
+
+
+    <script>
+    var socket = io.connect('http://r3:8000');
+
+    socket.on('data', function (data) {
+        const { humidity } = data;
+
+        let fixHumidity = humidity.toFixed(2) + '%';
+        // $('.guage').text = fixHumidity;
+
+        const humidityGuage = document.getElementById('humidity');
+        humidityGuage.innerHTML = `<div>${fixHumidity}</div>`;
+        humidityGuage.style.setProperty('--humidity', humidity.toFixed(2));
+
+        document.getElementById('temperature').innerHTML = '<div>' + data.temperature.toFixed(2) + 'C</div>';
+
+        console.log(data.data);
+    });
+    </script>
+</body>
+</html>
