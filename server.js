@@ -1,7 +1,16 @@
 const io = require("socket.io")();
-var sensor = require('node-dht-sensor');
+const sensor = require('node-dht-sensor');
 
-
+const data = {
+    temp: {
+        high: 0,
+        low: 100
+    },
+    humidity: {
+        high: 0,
+        low: 100
+    }
+};
 
 
 io.on("connection", client => {
@@ -17,16 +26,7 @@ io.on("connection", client => {
             );
         }
     });
-    let data = {
-        temp: {
-            high: 0,
-            low: 100
-        },
-        humidity: {
-            high: 0,
-            low: 100
-        }
-    };
+
     setInterval(() => {
         sensor.read(22, 4, function(err, temperature, humidity) {
             if (!err) {
@@ -40,6 +40,7 @@ io.on("connection", client => {
                     data.temp.high = temperature.toFixed(2);
                     // console.log('new high temperature', temperature);
                 }
+
                 if (temperature < data.temp.low) {
                     data.temp.low = temperature.toFixed(2);
                     // console.log('new low temperature', temperature);
@@ -49,6 +50,7 @@ io.on("connection", client => {
                     data.humidity.high = humidity.toFixed(2);
                     // console.log('new high humidity', humidity);
                 }
+
                 if (humidity < data.humidity.low) {
                     data.humidity.low = humidity.toFixed(2);
                     // console.log('new low temperature', temperature);

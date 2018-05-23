@@ -25,7 +25,7 @@
         width: 400px;
         background-color: black;
         position: relative;
-        font-size: 100px;
+        font-size: 30px;
         color: white;
         display: flex;
         justify-content: center;
@@ -75,10 +75,10 @@
         // $('.guage').text = fixHumidity;
 
         const humidityGuage = document.getElementById('humidity');
-        humidityGuage.innerHTML = `<div>${fixHumidity}</div>`;
+        humidityGuage.innerHTML = `<div>Actual: ${fixHumidity}<br />Min: ${data.data.humidity.low}%<br />Max: ${data.data.humidity.high}%</div>`;
         humidityGuage.style.setProperty('--humidity', humidity.toFixed(2));
 
-        document.getElementById('temperature').innerHTML = '<div>' + data.temperature.toFixed(2) + 'C</div>';
+        document.getElementById('temperature').innerHTML = `<div>Actual: ${data.temperature.toFixed(2)}°C<br />Min: ${data.data.temp.low}°C<br />Max: ${data.data.temp.high}°C</div>`;
 
         console.log(data.data);
     });
